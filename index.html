@@ -19,7 +19,19 @@
   }
   h1 { font-size:2rem; margin-bottom:10px; color:#333; }
   #phrase { font-size:1.3rem; color:#555; min-height:2em; margin-bottom:40px; }
-  #btn {
+  .btn-row { display:flex; gap:20px; justify-content:center; }
+  #yes {
+    padding:16px 48px;
+    font-size:1.2rem;
+    border:none;
+    border-radius:50px;
+    background:#27ae60;
+    color:#fff;
+    cursor:pointer;
+    transition:transform .1s;
+  }
+  #yes:hover { transform:scale(1.1); }
+  #no {
     padding:16px 48px;
     font-size:1.2rem;
     border:none;
@@ -30,7 +42,7 @@
     transition:transform .1s;
     position:relative;
   }
-  #btn:hover { transform:scale(1.05); }
+  #no:hover { transform:scale(1.05); }
   #result {
     display:none;
     font-size:1.5rem;
@@ -51,23 +63,26 @@
 <body>
 
 <h1>🥩 Sam-G anyone?</h1>
-<p id="phrase">Click "Yes" when you're ready…</p>
-<button id="btn">Yes!</button>
-<p id="result">🔥 LET'S GOOO! 🥩🔥</p>   
+<p id="phrase">Choose wisely…</p>
+<div class="btn-row">
+  <button id="yes">Yes!</button>
+  <button id="no">No</button>
+</div>
+<p id="result">🔥 LET'S GOOO! 🥩🔥</p>
 
 <script>
 const phrases = [
-  "Click \"Yes\" when you're ready…",
+  "Choose wisely…",
   "The button is shy? It dodges! 😄",
-  "Try again… it won't bite!",
-  "Almost! Just a little more…",
-  "You can't escape 😉",
-  "You know it only works with YES",
-  "Give up and click YES 🙈",
+  "You can't skip the pork 😉",
+  "No escaping samgyeopsal!",
+  "Just click YES already 🙈",
+  "Your stomach already said yes",
   "Last try… (kidding, keep going!)"
 ];
 let i = 0;
-const btn = document.getElementById('btn');
+const noBtn = document.getElementById('no');
+const yesBtn = document.getElementById('yes');
 const phraseEl = document.getElementById('phrase');
 const result = document.getElementById('result');
 
@@ -75,18 +90,19 @@ function dodge(e) {
   e.preventDefault();
   const x = Math.random() * (window.innerWidth - 150);
   const y = Math.random() * (window.innerHeight - 80);
-  btn.style.position = 'fixed';
-  btn.style.left = x + 'px';
-  btn.style.top  = y + 'px';
+  noBtn.style.position = 'fixed';
+  noBtn.style.left = x + 'px';
+  noBtn.style.top  = y + 'px';
   i = (i + 1) % phrases.length;
   phraseEl.textContent = phrases[i];
 }
 
-btn.addEventListener('mouseover', dodge);
-btn.addEventListener('touchstart', dodge, { passive: false });
+noBtn.addEventListener('mouseover', dodge);
+noBtn.addEventListener('touchstart', dodge, { passive: false });
 
-btn.addEventListener('click', function() {
-  btn.style.display = 'none';
+yesBtn.addEventListener('click', function() {
+  noBtn.style.display = 'none';
+  yesBtn.style.display = 'none';
   result.style.display = 'block';
   for (let j = 0; j < 60; j++) {
     const c = document.createElement('div');
