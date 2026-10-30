@@ -30,7 +30,7 @@
   }
   h1 { font-size:2rem; margin-bottom:10px; color:#333; }
   #phrase { font-size:1.3rem; color:#555; min-height:2em; margin-bottom:40px; }
-  .btn-row { display:flex; gap:20px; justify-content:center; }
+  .btn-row { display:flex; gap:15px; justify-content:center; flex-wrap:wrap; }
   #yes {
     padding:16px 48px;
     font-size:1.2rem;
@@ -43,7 +43,7 @@
   }
   #yes:hover { transform:scale(1.1); }
   #no {
-    padding:16px 48px;
+    padding:16px 40px;
     font-size:1.2rem;
     border:none;
     border-radius:50px;
@@ -54,10 +54,19 @@
     position:relative;
   }
   #no:hover { transform:scale(1.05); }
-  #result {
-    display:none;
-    margin-top:30px;
+  #maybe {
+    padding:16px 40px;
+    font-size:1.2rem;
+    border:none;
+    border-radius:50px;
+    background:#f39c12;
+    color:#fff;
+    cursor:pointer;
+    transition:transform .1s;
+    position:relative;
   }
+  #maybe:hover { transform:scale(1.05); }
+  #result { display:none; margin-top:30px; }
   #big-yes {
     font-size:4rem;
     font-weight:900;
@@ -109,6 +118,7 @@
 <div class="btn-row">
   <button id="yes">Yes!</button>
   <button id="no">No</button>
+  <button id="maybe">Maybe</button>
 </div>
 <div id="result">
   <div id="big-yes">YES!!!</div>
@@ -138,13 +148,25 @@ const phrases = [
   "🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩",
   "Okay I'm leaving. Bye."
 ];
+
+const maybeTexts = [
+  "Maybe",
+  "Maybe…?",
+  "I mean, yes?",
+  "Just click YES",
+  "Yes",
+  "YES"
+];
+
 let i = 0;
+let maybeCount = 0;
 const noBtn = document.getElementById('no');
 const yesBtn = document.getElementById('yes');
+const maybeBtn = document.getElementById('maybe');
 const phraseEl = document.getElementById('phrase');
 const result = document.getElementById('result');
 
-function dodge(e) {
+function dodgeNo(e) {
   e.preventDefault();
   const x = Math.random() * (window.innerWidth - 150);
   const y = Math.random() * (window.innerHeight - 80);
@@ -157,18 +179,42 @@ function dodge(e) {
   noBtn.style.transform = `scale(${s})`;
 }
 
-noBtn.addEventListener('mouseover', dodge);
-noBtn.addEventListener('touchstart', dodge, { passive: false });
+function dodgeMaybe(e) {
+  e.preventDefault();
+  const x = Math.random() * (window.innerWidth - 150);
+  const y = Math.random() * (window.innerHeight - 80);
+  maybeBtn.style.position = 'fixed';
+  maybeBtn.style.left = x + 'px';
+  maybeBtn.style.top  = y + 'px';
+  maybeCount++;
+  if (maybeCount < maybeTexts.length) {
+    maybeBtn.textContent = maybeTexts[maybeCount];
+  }
+  // After 5 dodges, "Maybe" just becomes a second "Yes"
+  if (maybeCount >= 5) {
+    maybeBtn.style.background = '#27ae60';
+  }
+}
 
-yesBtn.addEventListener('click', function() {
+noBtn.addEventListener('mouseover', dodgeNo);
+noBtn.addEventListener('touchstart', dodgeNo, { passive: false });
+maybeBtn.addEventListener('mouseover', dodgeMaybe);
+maybeBtn.addEventListener('touchstart', dodgeMaybe, { passive: false });
+
+yesBtn.addEventListener('click', celebrate);
+maybeBtn.addEventListener('click', function() {
+  if (maybeCount >= 5) celebrate();
+});
+
+function celebrate() {
   noBtn.style.display = 'none';
   yesBtn.style.display = 'none';
+  maybeBtn.style.display = 'none';
   phraseEl.style.display = 'none';
   document.querySelector('h1').style.display = 'none';
   result.style.display = 'block';
   document.body.classList.add('party');
 
-  // Wave 1: big confetti burst
   for (let j = 0; j < 120; j++) {
     setTimeout(() => {
       const c = document.createElement('div');
@@ -181,7 +227,6 @@ yesBtn.addEventListener('click', function() {
     }, j * 30);
   }
 
-  // Wave 2: emoji burst
   const emojis = ['🥩','🔥','🎉','🥳','✨','💪','🍖','🧀'];
   for (let k = 0; k < 15; k++) {
     setTimeout(() => {
@@ -195,7 +240,6 @@ yesBtn.addEventListener('click', function() {
     }, k * 200);
   }
 
-  // Wave 3: second confetti rain after 2s
   setTimeout(() => {
     for (let j = 0; j < 80; j++) {
       const c = document.createElement('div');
@@ -207,7 +251,7 @@ yesBtn.addEventListener('click', function() {
       document.body.appendChild(c);
     }
   }, 2000);
-});
+}
 </script>
 </body>
 </html>   
