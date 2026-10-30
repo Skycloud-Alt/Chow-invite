@@ -154,7 +154,6 @@ const maybeTexts = [
   "Maybe…?",
   "I mean, yes?",
   "Just click YES",
-  "Yes",
   "YES"
 ];
 
@@ -180,6 +179,7 @@ function dodgeNo(e) {
 }
 
 function dodgeMaybe(e) {
+  if (maybeCount >= 5) return; // stops dodging, becomes clickable
   e.preventDefault();
   const x = Math.random() * (window.innerWidth - 150);
   const y = Math.random() * (window.innerHeight - 80);
@@ -190,12 +190,12 @@ function dodgeMaybe(e) {
   if (maybeCount < maybeTexts.length) {
     maybeBtn.textContent = maybeTexts[maybeCount];
   }
-  // After 5 dodges, "Maybe" just becomes a second "Yes"
   if (maybeCount >= 5) {
     maybeBtn.style.background = '#27ae60';
+    maybeBtn.style.transform = 'scale(1.1)';
   }
-}
-
+}   
+ 
 noBtn.addEventListener('mouseover', dodgeNo);
 noBtn.addEventListener('touchstart', dodgeNo, { passive: false });
 maybeBtn.addEventListener('mouseover', dodgeMaybe);
